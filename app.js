@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let visual = platform.visual;
         visual.style.bottom = `${platform.bottom}px`;
 
-        if (platform.bottom < 10) {
+        if (platform.bottom === 0) {
           let firstPlatform = platforms[0].visual;
           firstPlatform.classList.remove('platform');
           platforms.shift();
@@ -78,8 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       platforms.forEach(platform => {
         if (
-          doodlerBottomSpace >= platform.bottom &&
-          doodlerBottomSpace <= platform.bottom + 37 &&
+          doodlerBottomSpace >= platform.bottom + 23 &&
+          doodlerBottomSpace <= platform.bottom + 40 &&
           doodlerLeftSpace + 44 >= platform.left &&
           doodlerLeftSpace <= platform.left + 85 &&
           !isJumping
@@ -95,10 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function gameOver() {
     console.log('game over');
     isGameOver = true;
-    while (grid.firstChild) {
-      grid.removeChild(grid.firstChild);
-    }
-    grid.innerHTML = score;
+    // while (grid.firstChild) {
+    //   grid.removeChild(grid.firstChild);
+    // }
+    gameOverElement = document.querySelector('.game-over').style.visibility =
+      'visible';
+    gameOverElement = document.querySelector('.score').innerHTML +=
+      score === 1 ? `${score} berg!` : `${score} bergs!`;
+    let fourthPlatform = platforms[3].visual;
+    fourthPlatform.classList.remove('platform');
     clearInterval(upTimerId);
     clearInterval(downTimerId);
     clearInterval(rightTimerId);
@@ -123,49 +128,51 @@ document.addEventListener('DOMContentLoaded', () => {
       moveLeft();
     } else if (event.key === 'ArrowRight') {
       moveRight();
-    } else if (event.key === 'ArrowUp') {
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       moveStraight();
     }
   }
 
   function moveLeft() {
-    if (isGoingRight) {
-      clearInterval(rightTimerId);
-      isGoingRight = false;
-      moveStraight();
-    } else if (!isGoingLeft) {
+    if (!isGameOver) {
+      if (isGoingRight) {
+        clearInterval(rightTimerId);
+        isGoingRight = false;
+        moveStraight();
+      }
       isGoingLeft = true;
+      clearInterval(leftTimerId);
       leftTimerId = setInterval(function () {
         if (doodlerLeftSpace >= 0) {
           doodlerLeftSpace -= 2.5;
           doodler.style.left = `${doodlerLeftSpace}px`;
         } else {
           moveRight();
-          moveRight();
         }
       }, 15);
+      addClass();
     }
-    addClass();
   }
 
   function moveRight() {
-    if (isGoingLeft) {
-      clearInterval(leftTimerId);
-      isGoingLeft = false;
-      moveStraight();
-    } else if (!isGoingRight) {
+    if (!isGameOver) {
+      if (isGoingLeft) {
+        clearInterval(leftTimerId);
+        isGoingLeft = false;
+        moveStraight();
+      }
       isGoingRight = true;
+      clearInterval(rightTimerId);
       rightTimerId = setInterval(function () {
         if (doodlerLeftSpace <= 340) {
           doodlerLeftSpace += 2.5;
           doodler.style.left = `${doodlerLeftSpace}px`;
         } else {
           moveLeft();
-          moveLeft();
         }
       }, 15);
+      addClass();
     }
-    addClass();
   }
 
   function addClass() {

@@ -1,10 +1,40 @@
 .grid {
   width: 400px;
   height: 600px;
-  background-color: lightcyan;
+  background-image: url('./grid.png');
   position: relative;
-  font-size: 200px;
+}
+
+.ocean {
+  background-image: url('./ocean.png');
+  background-repeat: no-repeat;
+  z-index: 11;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.score {
+  font-size: 36px;
   text-align: center;
+  color: navy;
+  font-family: Helvetica, Arial, sans-serif;
+  top: 180px;
+  width: 100%;
+  z-index: 12;
+  position: absolute;
+}
+
+.game-over {
+  background-image: url('./gameOver.png');
+  background-repeat: no-repeat;
+  z-index: 10;
+  visibility: hidden;
 }
 
 .doodler {
@@ -13,6 +43,7 @@
   background-position: center;
   background-repeat: no-repeat;
   position: absolute;
+  z-index: 5;
 }
 
 .doodler-up-right {
@@ -30,7 +61,7 @@
 
 .platform {
   width: 85px;
-  height: 37px;
+  height: 40px;
   background-image: url('./platform.png');
   background-repeat: no-repeat;
   z-index: 0;
