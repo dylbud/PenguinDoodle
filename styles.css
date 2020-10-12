@@ -1,12 +1,12 @@
 .grid {
   width: 400px;
   height: 600px;
-  background-image: url('./grid.png');
+  background-image: url('./assets/images/grid.png');
   position: relative;
 }
 
 .ocean {
-  background-image: url('./ocean.png');
+  background-image: url('./assets/images/ocean.png');
   background-repeat: no-repeat;
   z-index: 11;
 }
@@ -31,7 +31,7 @@
 }
 
 .game-over {
-  background-image: url('./gameOver.png');
+  background-image: url('./assets/images/gameOver.png');
   background-repeat: no-repeat;
   z-index: 10;
   visibility: hidden;
@@ -47,22 +47,22 @@
 }
 
 .doodler-up-right {
-  background-image: url('./doodlerUpRight.png');
+  background-image: url('./assets/images/doodlerUpRight.png');
 }
 .doodler-up-left {
-  background-image: url('./doodlerUpLeft.png');
+  background-image: url('./assets/images/doodlerUpLeft.png');
 }
 .doodler-down-right {
-  background-image: url('./doodlerDownRight.png');
+  background-image: url('./assets/images/doodlerDownRight.png');
 }
 .doodler-down-left {
-  background-image: url('./doodlerDownLeft.png');
+  background-image: url('./assets/images/doodlerDownLeft.png');
 }
 
 .platform {
   width: 85px;
   height: 40px;
-  background-image: url('./platform.png');
+  background-image: url('./assets/images/platform.png');
   background-repeat: no-repeat;
   z-index: 0;
   position: absolute;
