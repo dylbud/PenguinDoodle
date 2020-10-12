@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let doodlerLeftSpace = 50;
   let startPoint = 150;
   let doodlerBottomSpace = startPoint;
-  let isGameOver = false;
+  let isGameOver = true;
   let platformCount = 5;
   let platforms = [];
   let upTimerId;
@@ -204,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function start() {
+    isGameOver = false;
     if (!isGameOver) {
       createPlatforms();
       createDoodler();
@@ -212,6 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
       jump();
     }
   }
-  //attach to button
-  start();
+
+  document.addEventListener('keyup', () => {
+    if (isGameOver) {
+      document.querySelector('.title').style.visibility = 'hidden';
+      start();
+    }
+  });
 });
