@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let leftTimerId;
   let rightTimerId;
   let score = 0;
+  let movePlatformTimerId;
 
   function createDoodler() {
     grid.appendChild(doodler);
@@ -95,12 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function gameOver() {
     console.log('game over');
     isGameOver = true;
-    // while (grid.firstChild) {
-    //   grid.removeChild(grid.firstChild);
-    // }
-    gameOverElement = document.querySelector('.game-over').style.visibility =
-      'visible';
-    gameOverElement = document.querySelector('.score').innerHTML +=
+
+    document.querySelector('.game-over').style.visibility = 'visible';
+    document.querySelector('.score').innerHTML =
       score === 1 ? `${score} berg!` : `${score} bergs!`;
     let fourthPlatform = platforms[3].visual;
     fourthPlatform.classList.remove('platform');
@@ -108,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(downTimerId);
     clearInterval(rightTimerId);
     clearInterval(leftTimerId);
+    clearInterval(movePlatformTimerId);
   }
 
   function jump() {
@@ -205,18 +204,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function start() {
     isGameOver = false;
-    if (!isGameOver) {
-      createPlatforms();
-      createDoodler();
-      setInterval(movePlatforms, 15);
-      document.addEventListener('keyup', control);
-      jump();
+    document.querySelector('.game-over').style.visibility = 'hidden';
+    document.querySelector('.title').style.visibility = 'hidden';
+    document.querySelector('.score').innerHTML = '';
+    while (platforms.length > 0) {
+      grid.removeChild(platforms[0].visual);
+      platforms.shift();
     }
+    doodlerLeftSpace = 50;
+    startPoint = 150;
+    doodlerBottomSpace = startPoint;
+    platformCount = 5;
+    platforms = [];
+    isJumping = true;
+    isGoingLeft = false;
+    isGoingRight = false;
+    score = 0;
+    createPlatforms();
+    createDoodler();
+    movePlatformTimerId = setInterval(movePlatforms, 15);
+    document.addEventListener('keyup', control);
+    jump();
   }
 
   document.addEventListener('keyup', () => {
     if (isGameOver) {
-      document.querySelector('.title').style.visibility = 'hidden';
       start();
     }
   });
