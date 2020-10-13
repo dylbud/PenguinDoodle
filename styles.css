@@ -1,8 +1,15 @@
+/* The definitely-centered method:   */
+body {
+  display: grid;
+  place-items: center;
+}
+
 .grid {
   width: 400px;
   height: 600px;
-  background-image: url('./assets/images/grid.png');
   position: relative;
+  background-image: url('./assets/images/grid1.png');
+  transition: background-image 0.2s ease-in-out;
 }
 
 .ocean {
@@ -68,7 +75,6 @@
 .platform {
   width: 85px;
   height: 40px;
-  background-image: url('./assets/images/platform.png');
   background-repeat: no-repeat;
   z-index: 0;
   position: absolute;

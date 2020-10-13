@@ -15,7 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let leftTimerId;
   let rightTimerId;
   let score = 0;
+  let level = 1;
   let movePlatformTimerId;
+  let numberOfLevelColorSchemes = 5;
+  let platformsPerLevel = 10;
+  let platformImagePartialUrl = './assets/images/platform';
+  let gridImagePartialUrl = './assets/images/grid';
 
   function createDoodler() {
     grid.appendChild(doodler);
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const visual = this.visual;
       visual.classList.add('platform');
+      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
       visual.style.left = this.left + 'px';
       visual.style.bottom = this.bottom + 'px';
       grid.appendChild(visual);
@@ -61,11 +67,39 @@ document.addEventListener('DOMContentLoaded', () => {
           firstPlatform.classList.remove('platform');
           platforms.shift();
           score++;
+          if (score % platformsPerLevel === 0) {
+            levelUp();
+          }
+          console.log('level' + level);
           let newPlatform = new Platform(600);
           platforms.push(newPlatform);
         }
       });
     }
+  }
+
+  function levelStyleMarker() {
+    return level % numberOfLevelColorSchemes === 0
+      ? numberOfLevelColorSchemes
+      : level % numberOfLevelColorSchemes;
+  }
+
+  function levelUp() {
+    platforms.forEach(platform => {
+      let visual = platform.visual;
+      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
+    });
+
+    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
+
+    level++;
+
+    platforms.forEach(platform => {
+      let visual = platform.visual;
+      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
+    });
+
+    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
   }
 
   function fall() {
@@ -220,8 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
     isGoingLeft = false;
     isGoingRight = false;
     score = 0;
+    level = 1;
     createPlatforms();
     createDoodler();
+    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
     movePlatformTimerId = setInterval(movePlatforms, 15);
     document.addEventListener('keyup', control);
     jump();
