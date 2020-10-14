@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function movePlatforms() {
-    if (doodlerBottomSpace > 200) {
+    if (doodlerBottomSpace > 200 || isJumping) {
       platforms.forEach(platform => {
         platform.bottom -= 2;
         let visual = platform.visual;
@@ -137,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
       doodlerBottomSpace += 10;
       doodler.style.bottom = `${doodlerBottomSpace}px`;
       if (doodlerBottomSpace > startPoint + 204) {
+        console.log(doodlerBottomSpace, startPoint);
         fall();
       }
     }, animationSpeed);
@@ -217,8 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function moveStraight() {
-    isGoingRight = false;
-    isGoingLeft = false;
     clearInterval(leftTimerId);
     clearInterval(rightTimerId);
   }
