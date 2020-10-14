@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let startPoint = 150;
   let doodlerBottomSpace = startPoint;
   let isGameOver = true;
-  let platformCount = 5;
+  let platformCount;
   let platforms = [];
   let upTimerId;
   let downTimerId;
@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let platformsPerLevel = 10;
   let platformImagePartialUrl = './assets/images/platform';
   let gridImagePartialUrl = './assets/images/grid';
+  let animationSpeed;
 
   function createDoodler() {
     grid.appendChild(doodler);
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function levelUp() {
+    movePlatforms();
     platforms.forEach(platform => {
       let visual = platform.visual;
       visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
@@ -100,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
+    animationSpeed = animationSpeed - 1;
+    clearInterval(movePlatformTimerId);
+    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
   }
 
   function fall() {
@@ -123,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
           jump();
         }
       });
-    }, 15);
+    }, animationSpeed);
     addClass();
   }
 
@@ -152,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (doodlerBottomSpace > startPoint + 200) {
         fall();
       }
-    }, 15);
+    }, animationSpeed);
     addClass();
   }
 
@@ -182,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           moveRight();
         }
-      }, 15);
+      }, animationSpeed);
       addClass();
     }
   }
@@ -203,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           moveLeft();
         }
-      }, 15);
+      }, animationSpeed);
       addClass();
     }
   }
@@ -255,10 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
     isGoingRight = false;
     score = 0;
     level = 1;
+    animationSpeed = 16;
     createPlatforms();
     createDoodler();
     grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
-    movePlatformTimerId = setInterval(movePlatforms, 15);
+    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
     document.addEventListener('keyup', control);
     jump();
   }
