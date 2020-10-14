@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let level = 1;
   let movePlatformTimerId;
   let numberOfLevelColorSchemes = 5;
-  let platformsPerLevel = 12;
+  let platformsPerLevel = 16;
   let platformImagePartialUrl = './assets/images/platform';
   let gridImagePartialUrl = './assets/images/grid';
   let animationSpeed;
