@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let level = 1;
   let movePlatformTimerId;
   let numberOfLevelColorSchemes = 5;
-  let platformsPerLevel = 10;
+  let platformsPerLevel = 12;
   let platformImagePartialUrl = './assets/images/platform';
   let gridImagePartialUrl = './assets/images/grid';
   let animationSpeed;
@@ -86,12 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function levelUp() {
-    movePlatforms();
     platforms.forEach(platform => {
       let visual = platform.visual;
       visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
     });
-
     grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
 
     level++;
@@ -100,8 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
       let visual = platform.visual;
       visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
     });
-
     grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
+
     animationSpeed = animationSpeed - 1;
     clearInterval(movePlatformTimerId);
     movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
@@ -132,29 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
     addClass();
   }
 
-  function gameOver() {
-    console.log('game over');
-    isGameOver = true;
-
-    document.querySelector('.game-over').style.visibility = 'visible';
-    document.querySelector('.score').innerHTML =
-      score === 1 ? `${score} berg!` : `${score} bergs!`;
-    let fourthPlatform = platforms[3].visual;
-    fourthPlatform.classList.remove('platform');
-    clearInterval(upTimerId);
-    clearInterval(downTimerId);
-    clearInterval(rightTimerId);
-    clearInterval(leftTimerId);
-    clearInterval(movePlatformTimerId);
-  }
-
   function jump() {
     clearInterval(downTimerId);
     isJumping = true;
     upTimerId = setInterval(function () {
       doodlerBottomSpace += 10;
       doodler.style.bottom = `${doodlerBottomSpace}px`;
-      if (doodlerBottomSpace > startPoint + 200) {
+      if (doodlerBottomSpace > startPoint + 204) {
         fall();
       }
     }, animationSpeed);
@@ -239,6 +221,22 @@ document.addEventListener('DOMContentLoaded', () => {
     isGoingLeft = false;
     clearInterval(leftTimerId);
     clearInterval(rightTimerId);
+  }
+
+  function gameOver() {
+    console.log('game over');
+    isGameOver = true;
+
+    document.querySelector('.game-over').style.visibility = 'visible';
+    document.querySelector('.score').innerHTML =
+      score === 1 ? `${score} berg!` : `${score} bergs!`;
+    let fourthPlatform = platforms[3].visual;
+    fourthPlatform.classList.remove('platform');
+    clearInterval(upTimerId);
+    clearInterval(downTimerId);
+    clearInterval(rightTimerId);
+    clearInterval(leftTimerId);
+    clearInterval(movePlatformTimerId);
   }
 
   function start() {
