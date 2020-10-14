@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
 
-    animationSpeed = animationSpeed - 1;
+    animationSpeed = animationSpeed * 0.95;
     clearInterval(movePlatformTimerId);
     movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
   }
