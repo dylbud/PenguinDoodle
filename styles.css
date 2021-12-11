@@ -50,7 +50,7 @@ body {
   visibility: hidden;
 }
 
-.doodler {
+.penguin {
   width: 44px;
   height: 85px;
   background-position: center;
@@ -59,17 +59,17 @@ body {
   z-index: 5;
 }
 
-.doodler-up-right {
-  background-image: url('./assets/images/doodlerUpRight.png');
+.penguin-up-right {
+  background-image: url('./assets/images/penguinUpRight.png');
 }
-.doodler-up-left {
-  background-image: url('./assets/images/doodlerUpLeft.png');
+.penguin-up-left {
+  background-image: url('./assets/images/penguinUpLeft.png');
 }
-.doodler-down-right {
-  background-image: url('./assets/images/doodlerDownRight.png');
+.penguin-down-right {
+  background-image: url('./assets/images/penguinDownRight.png');
 }
-.doodler-down-left {
-  background-image: url('./assets/images/doodlerDownLeft.png');
+.penguin-down-left {
+  background-image: url('./assets/images/penguinDownLeft.png');
 }
 
 .platform {

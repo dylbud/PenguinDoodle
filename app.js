@@ -1,70 +1,140 @@
 document.addEventListener('DOMContentLoaded', () => {
   const grid = document.querySelector('.grid');
-  const doodler = document.createElement('div');
-  let doodlerLeftSpace = 50;
-  let startPoint = 150;
-  let doodlerBottomSpace = startPoint;
+  const penguin = document.createElement('div');
+  let startPoint;
+  let penguinBottomSpace;
   let isGameOver = true;
-  let platformCount;
   let platforms = [];
   let upTimerId;
   let downTimerId;
-  let isJumping = true;
-  let isGoingLeft = false;
-  let isGoingRight = false;
+  let isJumping;
+  let isGoingLeft;
+  let isGoingRight;
   let leftTimerId;
   let rightTimerId;
-  let score = 0;
-  let level = 1;
+  let score;
+  let level;
   let movePlatformTimerId;
-  let numberOfLevelColorSchemes = 5;
   let platformsPerLevel = 16;
-  let platformImagePartialUrl = './assets/images/platform';
-  let gridImagePartialUrl = './assets/images/grid';
-  let animationSpeed;
+  let animationSpeed = 16;
 
-  function createDoodler() {
-    grid.appendChild(doodler);
-    doodler.classList.add('doodler');
+  document.addEventListener('keyup', () => {
+    if (isGameOver) {
+      start();
+    }
+  });
+
+  function start() {
+    getReadyForNewGame();
+    jump();
+  } 
+
+  function getReadyForNewGame() {
+    clearAllBanners();
+    clearPlatforms();
+    SetValuesForNewGame();
+    createGameComponents();
+  }
+
+  function createGameComponents() {
+    createPlatforms();
+    createpenguin();
+    setGameBackgroundImage();
+    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
+  }
+
+  function clearAllBanners() {
+    document.querySelector('.game-over').style.visibility = 'hidden';
+    document.querySelector('.title').style.visibility = 'hidden';
+    document.querySelector('.score').innerHTML = '';
+  }
+
+  function clearPlatforms() {
+    while (platforms.length > 0) {
+      grid.removeChild(platforms[0].visualElement);
+      platforms.shift();
+    }
+  }
+
+  function SetValuesForNewGame() {
+    isGameOver = false;
+    penguinLeftSpace = 50;
+    startPoint = 150;
+    penguinBottomSpace = startPoint;
+    isJumping = true;
+    isGoingLeft = false;
+    isGoingRight = false;
+    score = 0;
+    level = 1;
+  }
+
+  function createpenguin() {
+    grid.appendChild(penguin);
+    penguin.classList.add('penguin');
     addClass();
-    doodlerLeftSpace = platforms[0].left + 12.5;
-    doodler.style.left = `${doodlerLeftSpace}px`;
-    doodler.style.bottom = `${doodlerBottomSpace}px`;
+    penguinLeftSpace = platforms[0].left + 12.5;
+    penguin.style.left = `${penguinLeftSpace}px`;
+    penguin.style.bottom = `${penguinBottomSpace}px`;
+    document.addEventListener('keyup', control);
+  }
+
+  function setGameBackgroundImage() {
+    grid.style.backgroundImage = `url('./assets/images/grid${getLevelColorSchemeIndicator()}.png')`;
+  }
+
+  function setPlatformImage(platform) {
+    platform.style.backgroundImage = `url('./assets/images/platform${getLevelColorSchemeIndicator()}.png')`;
+  }
+
+  function setImagesOnAllPlatforms() {
+    platforms.forEach(platform => {
+      let visualElement = platform.visualElement;
+      setPlatformImage(visualElement);
+    });
   }
 
   class Platform {
-    constructor(newPlatBottom) {
-      this.bottom = newPlatBottom;
+    constructor(newPlatformPosition) {
+    
+      this.bottom = newPlatformPosition;
       this.left = Math.random() * 315;
-      this.visual = document.createElement('div');
+      this.visualElement = document.createElement('div');
+      this.setPlatformStyles();
+      
+    }
 
-      const visual = this.visual;
-      visual.classList.add('platform');
-      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
-      visual.style.left = this.left + 'px';
-      visual.style.bottom = this.bottom + 'px';
-      grid.appendChild(visual);
+
+    setPlatformStyles() {
+      const visualElement = this.visualElement;
+      visualElement.classList.add('platform');
+      setPlatformImage(visualElement);
+      visualElement.style.left = this.left + 'px';
+      visualElement.style.bottom = this.bottom + 'px';
+      grid.appendChild(visualElement);
     }
   }
 
   function createPlatforms() {
-    for (let i = 0; i < platformCount; i++) {
-      let platGap = 600 / platformCount;
-      let newPlatBottom = 100 + i * platGap;
-      let newPlatform = new Platform(newPlatBottom);
+    let numberOfPlatforms = 5;
+    let heightOfViewPort = 600;
+    let nudgeUp = 100;
+    for (let i = 0; i < numberOfPlatforms; i++) {
+      let platformGap = heightOfViewPort / numberOfPlatforms;
+      let newPlatformPosition = nudgeUp + (i * platformGap);
+      let newPlatform = new Platform(newPlatformPosition);
       platforms.push(newPlatform);
     }
   }
 
   function movePlatforms() {
-    if (doodlerBottomSpace > 200 || isJumping) {
+    if (penguinBottomSpace > 200 || isJumping) {
       platforms.forEach(platform => {
         platform.bottom -= 2;
-        let visual = platform.visual;
-        visual.style.bottom = `${platform.bottom}px`;
+        let visualElement = platform.visualElement;
+        visualElement.style.bottom = `${platform.bottom}px`;
 
         if (platform.bottom === 0) {
-          let firstPlatform = platforms[0].visual;
+          let firstPlatform = platforms[0].visualElement;
           firstPlatform.classList.remove('platform');
           platforms.shift();
           score++;
@@ -79,27 +149,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function levelStyleMarker() {
-    return level % numberOfLevelColorSchemes === 0
+  function getLevelColorSchemeIndicator() {
+    let numberOfLevelColorSchemes = 5;
+    let colorSchemeIndicator = level % numberOfLevelColorSchemes === 0
       ? numberOfLevelColorSchemes
       : level % numberOfLevelColorSchemes;
+    return colorSchemeIndicator;
   }
 
   function levelUp() {
-    platforms.forEach(platform => {
-      let visual = platform.visual;
-      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
-    });
-    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
-
     level++;
+    setImagesOnAllPlatforms();
+    setGameBackgroundImage();
+    increaseAnimationSpeed();
+  }
 
-    platforms.forEach(platform => {
-      let visual = platform.visual;
-      visual.style.backgroundImage = `url('${platformImagePartialUrl}${levelStyleMarker()}.png')`;
-    });
-    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
-
+  function increaseAnimationSpeed() {
     animationSpeed = animationSpeed * 0.95;
     clearInterval(movePlatformTimerId);
     movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
@@ -109,20 +174,20 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(upTimerId);
     isJumping = false;
     downTimerId = setInterval(function () {
-      doodlerBottomSpace -= 2.5;
-      doodler.style.bottom = `${doodlerBottomSpace}px`;
-      if (doodlerBottomSpace <= 0) {
+      penguinBottomSpace -= 2.5;
+      penguin.style.bottom = `${penguinBottomSpace}px`;
+      if (penguinBottomSpace <= 0) {
         gameOver();
       }
       platforms.forEach(platform => {
         if (
-          doodlerBottomSpace >= platform.bottom + 23 &&
-          doodlerBottomSpace <= platform.bottom + 40 &&
-          doodlerLeftSpace + 44 >= platform.left &&
-          doodlerLeftSpace <= platform.left + 85 &&
+          penguinBottomSpace >= platform.bottom + 23 &&
+          penguinBottomSpace <= platform.bottom + 40 &&
+          penguinLeftSpace + 44 >= platform.left &&
+          penguinLeftSpace <= platform.left + 85 &&
           !isJumping
         ) {
-          startPoint = doodlerBottomSpace;
+          startPoint = penguinBottomSpace;
           jump();
         }
       });
@@ -134,10 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(downTimerId);
     isJumping = true;
     upTimerId = setInterval(function () {
-      doodlerBottomSpace += 10;
-      doodler.style.bottom = `${doodlerBottomSpace}px`;
-      if (doodlerBottomSpace > startPoint + 204) {
-        console.log(doodlerBottomSpace, startPoint);
+      penguinBottomSpace += 10;
+      penguin.style.bottom = `${penguinBottomSpace}px`;
+      if (penguinBottomSpace > startPoint + 204) {
+        console.log(penguinBottomSpace, startPoint);
         fall();
       }
     }, animationSpeed);
@@ -164,9 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
       isGoingLeft = true;
       clearInterval(leftTimerId);
       leftTimerId = setInterval(function () {
-        if (doodlerLeftSpace >= 0) {
-          doodlerLeftSpace -= 2.5;
-          doodler.style.left = `${doodlerLeftSpace}px`;
+        if (penguinLeftSpace >= 0) {
+          penguinLeftSpace -= 2.5;
+          penguin.style.left = `${penguinLeftSpace}px`;
         } else {
           moveRight();
         }
@@ -185,9 +250,30 @@ document.addEventListener('DOMContentLoaded', () => {
       isGoingRight = true;
       clearInterval(rightTimerId);
       rightTimerId = setInterval(function () {
-        if (doodlerLeftSpace <= 340) {
-          doodlerLeftSpace += 2.5;
-          doodler.style.left = `${doodlerLeftSpace}px`;
+        if (penguinLeftSpace <= 340) {
+          penguinLeftSpace += 2.5;
+          penguin.style.left = `${penguinLeftSpace}px`;
+        } else {
+          moveLeft();
+        }
+      }, animationSpeed);
+      addClass();
+    }
+  }
+
+  function move(direction) {
+    if (!isGameOver) {
+      if (isGoingLeft) {
+        clearInterval(leftTimerId);
+        isGoingLeft = false;
+        moveStraight();
+      }
+      isGoingRight = true;
+      clearInterval(rightTimerId);
+      rightTimerId = setInterval(function () {
+        if (penguinLeftSpace <= 340) {
+          penguinLeftSpace += 2.5;
+          penguin.style.left = `${penguinLeftSpace}px`;
         } else {
           moveLeft();
         }
@@ -197,22 +283,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function addClass() {
-    doodler.classList.remove('doodler-down-left');
-    doodler.classList.remove('doodler-down-right');
-    doodler.classList.remove('doodler-up-left');
-    doodler.classList.remove('doodler-up-right');
+    penguin.classList.remove('penguin-down-left');
+    penguin.classList.remove('penguin-down-right');
+    penguin.classList.remove('penguin-up-left');
+    penguin.classList.remove('penguin-up-right');
 
     if (isGoingLeft) {
       if (isJumping) {
-        doodler.classList.add('doodler-up-left');
+        penguin.classList.add('penguin-up-left');
       } else {
-        doodler.classList.add('doodler-down-left');
+        penguin.classList.add('penguin-down-left');
       }
     } else {
       if (isJumping) {
-        doodler.classList.add('doodler-up-right');
+        penguin.classList.add('penguin-up-right');
       } else {
-        doodler.classList.add('doodler-down-right');
+        penguin.classList.add('penguin-down-right');
       }
     }
   }
@@ -229,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.game-over').style.visibility = 'visible';
     document.querySelector('.score').innerHTML =
       score === 1 ? `${score} berg!` : `${score} bergs!`;
-    let fourthPlatform = platforms[3].visual;
+    let fourthPlatform = platforms[3].visualElement;
     fourthPlatform.classList.remove('platform');
     clearInterval(upTimerId);
     clearInterval(downTimerId);
@@ -238,37 +324,4 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(movePlatformTimerId);
   }
 
-  function start() {
-    isGameOver = false;
-    document.querySelector('.game-over').style.visibility = 'hidden';
-    document.querySelector('.title').style.visibility = 'hidden';
-    document.querySelector('.score').innerHTML = '';
-    while (platforms.length > 0) {
-      grid.removeChild(platforms[0].visual);
-      platforms.shift();
-    }
-    doodlerLeftSpace = 50;
-    startPoint = 150;
-    doodlerBottomSpace = startPoint;
-    platformCount = 5;
-    platforms = [];
-    isJumping = true;
-    isGoingLeft = false;
-    isGoingRight = false;
-    score = 0;
-    level = 1;
-    animationSpeed = 16;
-    createPlatforms();
-    createDoodler();
-    grid.style.backgroundImage = `url('${gridImagePartialUrl}${levelStyleMarker()}.png')`;
-    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
-    document.addEventListener('keyup', control);
-    jump();
-  }
-
-  document.addEventListener('keyup', () => {
-    if (isGameOver) {
-      start();
-    }
-  });
 });
