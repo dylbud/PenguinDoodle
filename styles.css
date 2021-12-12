@@ -60,16 +60,16 @@ body {
 }
 
 .penguin-up-right {
-  background-image: url('./assets/images/penguinUpRight.png');
+  background-image: url('./assets/images/penguinAspectUpRight.png');
 }
 .penguin-up-left {
-  background-image: url('./assets/images/penguinUpLeft.png');
+  background-image: url('./assets/images/penguinAspectUpLeft.png');
 }
 .penguin-down-right {
-  background-image: url('./assets/images/penguinDownRight.png');
+  background-image: url('./assets/images/penguinAspectDownRight.png');
 }
 .penguin-down-left {
-  background-image: url('./assets/images/penguinDownLeft.png');
+  background-image: url('./assets/images/penguinAspectDownLeft.png');
 }
 
 .platform {

@@ -17,33 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let movePlatformTimerId;
   let platformsPerLevel = 16;
   let animationSpeed = 16;
+  
 
   document.addEventListener('keyup', () => {
     if (isGameOver) {
-      start();
+      getReadyForNewGame();
+      jump();
     }
   });
 
-  function start() {
-    getReadyForNewGame();
-    jump();
-  } 
-
   function getReadyForNewGame() {
-    clearAllBanners();
+    clearBanners();
     clearPlatforms();
     SetValuesForNewGame();
     createGameComponents();
   }
 
-  function createGameComponents() {
-    createPlatforms();
-    createpenguin();
-    setGameBackgroundImage();
-    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
-  }
-
-  function clearAllBanners() {
+  function clearBanners() {
     document.querySelector('.game-over').style.visibility = 'hidden';
     document.querySelector('.title').style.visibility = 'hidden';
     document.querySelector('.score').innerHTML = '';
@@ -68,10 +58,47 @@ document.addEventListener('DOMContentLoaded', () => {
     level = 1;
   }
 
-  function createpenguin() {
+  function createGameComponents() {
+    createPlatforms();
+    createPenguin();
+    setGameBackgroundImage();
+    movePlatformTimerId = setInterval(movePlatforms, animationSpeed);
+  }
+
+  function createPlatforms() {
+    let numberOfPlatforms = 5;
+    let heightOfViewPort = 600;
+    let nudge = 100;
+    for (let i = 0; i < numberOfPlatforms; i++) {
+      let platformGap = heightOfViewPort / numberOfPlatforms;
+      let newPlatformPosition = (i * platformGap) + nudge;
+      let newPlatform = new Platform(newPlatformPosition);
+      platforms.push(newPlatform);
+    }
+  }
+
+  class Platform {
+    constructor(newPlatformPosition) {
+      this.bottom = newPlatformPosition;
+      this.left = Math.random() * 315;
+      this.visualElement = document.createElement('div');
+      this.setPlatformStyles();
+    }
+
+    setPlatformStyles() {
+      const visualElement = this.visualElement;
+      visualElement.classList.add('platform');
+      setPlatformImage(visualElement);
+      visualElement.style.left = this.left + 'px';
+      visualElement.style.bottom = this.bottom + 'px';
+      grid.appendChild(visualElement);
+    }
+  }
+
+  function createPenguin() {
     grid.appendChild(penguin);
     penguin.classList.add('penguin');
-    addClass();
+    setPenguinAspect();
     penguinLeftSpace = platforms[0].left + 12.5;
     penguin.style.left = `${penguinLeftSpace}px`;
     penguin.style.bottom = `${penguinBottomSpace}px`;
@@ -86,45 +113,13 @@ document.addEventListener('DOMContentLoaded', () => {
     platform.style.backgroundImage = `url('./assets/images/platform${getLevelColorSchemeIndicator()}.png')`;
   }
 
-  function setImagesOnAllPlatforms() {
+  function setAllPlatformImages() {
     platforms.forEach(platform => {
       let visualElement = platform.visualElement;
       setPlatformImage(visualElement);
     });
   }
 
-  class Platform {
-    constructor(newPlatformPosition) {
-    
-      this.bottom = newPlatformPosition;
-      this.left = Math.random() * 315;
-      this.visualElement = document.createElement('div');
-      this.setPlatformStyles();
-      
-    }
-
-
-    setPlatformStyles() {
-      const visualElement = this.visualElement;
-      visualElement.classList.add('platform');
-      setPlatformImage(visualElement);
-      visualElement.style.left = this.left + 'px';
-      visualElement.style.bottom = this.bottom + 'px';
-      grid.appendChild(visualElement);
-    }
-  }
-
-  function createPlatforms() {
-    let numberOfPlatforms = 5;
-    let heightOfViewPort = 600;
-    let nudgeUp = 100;
-    for (let i = 0; i < numberOfPlatforms; i++) {
-      let platformGap = heightOfViewPort / numberOfPlatforms;
-      let newPlatformPosition = nudgeUp + (i * platformGap);
-      let newPlatform = new Platform(newPlatformPosition);
-      platforms.push(newPlatform);
-    }
-  }
 
   function movePlatforms() {
     if (penguinBottomSpace > 200 || isJumping) {
@@ -159,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function levelUp() {
     level++;
-    setImagesOnAllPlatforms();
+    setAllPlatformImages();
     setGameBackgroundImage();
     increaseAnimationSpeed();
   }
@@ -192,8 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }, animationSpeed);
-    addClass();
+    setPenguinAspect();
   }
+
+  function 
 
   function jump() {
     clearInterval(downTimerId);
@@ -206,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fall();
       }
     }, animationSpeed);
-    addClass();
+    setPenguinAspect();
   }
 
   function control(event) {
@@ -236,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
           moveRight();
         }
       }, animationSpeed);
-      addClass();
+      setPenguinAspect();
     }
   }
 
@@ -257,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
           moveLeft();
         }
       }, animationSpeed);
-      addClass();
+      setPenguinAspect();
     }
   }
 
@@ -278,15 +275,20 @@ document.addEventListener('DOMContentLoaded', () => {
           moveLeft();
         }
       }, animationSpeed);
-      addClass();
+      setPenguinAspect();
     }
   }
 
-  function addClass() {
+
+  function clearPenguinAspect() {
     penguin.classList.remove('penguin-down-left');
     penguin.classList.remove('penguin-down-right');
     penguin.classList.remove('penguin-up-left');
     penguin.classList.remove('penguin-up-right');
+  }
+  
+  function setPenguinAspect() {
+    clearPenguinAspect();
 
     if (isGoingLeft) {
       if (isJumping) {
