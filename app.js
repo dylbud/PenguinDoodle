@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const penguin = document.createElement('div');
   let startPoint;
   let penguinBottomSpace;
-  let isGameOver = true;
   let platforms = [];
   let upTimerId;
   let downTimerId;
@@ -17,10 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let movePlatformTimerId;
   let platformsPerLevel = 16;
   let animationSpeed = 16;
+  let gameStart = true;
   
 
   document.addEventListener('keyup', () => {
-    if (isGameOver) {
+    if (isGameOver() || gameStart) {
+      gameStart = false;
       getReadyForNewGame();
       jump();
     }
@@ -47,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function SetValuesForNewGame() {
-    isGameOver = false;
     penguinLeftSpace = 50;
     startPoint = 150;
     penguinBottomSpace = startPoint;
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     downTimerId = setInterval(function () {
       penguinBottomSpace -= 2.5;
       penguin.style.bottom = `${penguinBottomSpace}px`;
-      if (penguinBottomSpace <= 0) {
+      if (isGameOver()) {
         gameOver();
       }
       platforms.forEach(platform => {
@@ -190,7 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setPenguinAspect();
   }
 
-  function 
+  function isGameOver() {
+    return penguinBottomSpace <= 0;
+  }
 
   function jump() {
     clearInterval(downTimerId);
@@ -217,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function moveLeft() {
-    if (!isGameOver) {
+    if (!isGameOver()) {
       if (isGoingRight) {
         clearInterval(rightTimerId);
         isGoingRight = false;
@@ -238,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function moveRight() {
-    if (!isGameOver) {
+    if (!isGameOver()) {
       if (isGoingLeft) {
         clearInterval(leftTimerId);
         isGoingLeft = false;
@@ -259,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function move(direction) {
-    if (!isGameOver) {
+    if (!isGameOver()) {
       if (isGoingLeft) {
         clearInterval(leftTimerId);
         isGoingLeft = false;
@@ -312,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gameOver() {
     console.log('game over');
-    isGameOver = true;
 
     document.querySelector('.game-over').style.visibility = 'visible';
     document.querySelector('.score').innerHTML =
