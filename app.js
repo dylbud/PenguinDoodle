@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('keyup', () => {
     if (GameState.isGameOver() || gameStart) {
+      document.addEventListener('keyup', control);
       gameStart = false;
       getReadyForNewGame();
       Penguin.jump();
@@ -39,7 +40,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.score').innerHTML = '';
   }
 
+  
 
+  function control(event) {
+    if (event.key === 'ArrowLeft') {
+      Penguin.moveLeft();
+    } else if (event.key === 'ArrowRight') {
+        Penguin.moveRight();
+    } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        Penguin.moveStraight();
+    }
+}
 
 
 

@@ -7,7 +7,6 @@ export class PlatformCollection {
     static movePlatformTimerId = 0;
     static createPlatforms() {
         this.platforms = new Array();
-        console.log("init", this.platforms);
         let numberOfPlatforms = 5;
         let heightOfViewPort = 600;
         let nudge = 100;
@@ -52,10 +51,9 @@ export class PlatformCollection {
                     PlatformCollection.removeFirstElement();
                     GameState.score++;
                     if (GameState.score % GameState.platformsPerLevel === 0) {
-                    GameState.levelUp();
-                    PlatformCollection.setAllPlatformImages();
+                        GameState.levelUp();
+                        PlatformCollection.setAllPlatformImages();
                     }
-                    console.log('level' + GameState.level);
                     let newPlatform = new Platform(600, GameState.level);
                     PlatformCollection.platforms.push(newPlatform);
                 }

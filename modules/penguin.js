@@ -10,14 +10,19 @@ export let Penguin = {
     isJumping: true,
     isGoingLeft: false,
     isGoingRight: false,
+    rightTimerId: 0,
+    leftTimerId: 0,
+
     createPenguin() {
+        Penguin.penguinBottomSpace = 150;
+        Penguin.startPoint = Penguin.penguinBottomSpace;
         GameState.grid.appendChild(Penguin.element);
         Penguin.element.classList.add('penguin');
         Penguin.setPenguinAspect();
         Penguin.penguinLeftSpace = PlatformCollection.getPlatform(0).left + 12.5;
         Penguin.element.style.left = `${Penguin.penguinLeftSpace}px`;
         Penguin.element.style.bottom = `${Penguin.penguinBottomSpace}px`;
-        document.addEventListener('keyup', Penguin.control);
+        
     },
 
     clearPenguinAspect() {
@@ -45,16 +50,6 @@ export let Penguin = {
         }
     },
 
-    control(event) {
-        if (event.key === 'ArrowLeft') {
-          Penguin.moveLeft();
-        } else if (event.key === 'ArrowRight') {
-            Penguin.moveRight();
-        } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-            Penguin.moveStraight();
-        }
-    },
-
     jump() {
         clearInterval(Penguin.downTimerId);
         Penguin.isJumping = true;
@@ -62,6 +57,7 @@ export let Penguin = {
             Penguin.penguinBottomSpace += 10;
             Penguin.element.style.bottom = `${Penguin.penguinBottomSpace}px`;
           if (Penguin.penguinBottomSpace > Penguin.startPoint + 204) {
+            console.log(Penguin.penguinBottomSpace, Penguin.startPoint);
             Penguin.fall();
           }
         }, GameState.animationSpeed);
@@ -75,7 +71,7 @@ export let Penguin = {
             Penguin.isGoingRight = false;
             Penguin.moveStraight();
           }
-          Penguin.sGoingLeft = true;
+          Penguin.isGoingLeft = true;
           clearInterval(Penguin.leftTimerId);
           Penguin.leftTimerId = setInterval(function () {
             if (Penguin.penguinLeftSpace >= 0) {
